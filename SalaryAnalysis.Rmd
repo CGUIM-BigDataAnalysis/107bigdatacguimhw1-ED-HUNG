@@ -12,8 +12,23 @@ author: put your name here
 ```{r dataload}
 library(jsonlite)
 library(dplyr)
-#fromjson()
-#inner_join()
+library(readr)
+pay103<-read_csv("C:/Users/edwardhung/Desktop/103.csv")
+pay104<-read_csv("C:/Users/edwardhung/Desktop/104.csv")
+pay105<-read_csv("C:/Users/edwardhung/Desktop/105.csv")
+pay106<-read_csv("C:/Users/edwardhung/Desktop/106.csv")
+for(n in 1:14){
+  pay103[[n]]<-gsub("—|…|_|、","",pay103[[n]])
+}
+for(n in 1:14){
+  pay104[[n]]<-gsub("—|…|_|、","",pay104[[n]])
+}
+for(n in 1:14){
+  pay105[[n]]<-gsub("—|…|_|、","",pay105[[n]])
+}
+for(n in 1:14){
+  pay106[[n]]<-gsub("—|…|_|、","",pay106[[n]])
+}
 ```
 
 ### 106年度薪資較103年度薪資高的職業有哪些? 
