@@ -1,0 +1,7 @@
+"0","#這是R Code Chunk"
+"0","payjoin<-inner_join(pay103,pay106,by=""大職業別"")"
+"0","payjoin$薪資比<-as.numeric(payjoin$`大學-薪資.y`)/as.numeric(payjoin$`大學-薪資.x`)"
+"0","payjoin<-arrange(payjoin,desc(薪資比))"
+"0","payjoin<-na.omit(payjoin)"
+"0","pp<-payjoin[payjoin$薪資比>1,]"
+"0","knitr::kable(head(pp,10))"

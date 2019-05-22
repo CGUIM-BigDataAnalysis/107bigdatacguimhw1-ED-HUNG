@@ -19,16 +19,27 @@ library(dplyr)
 ### 106年度薪資較103年度薪資高的職業有哪些? 
 ```{r compare103106}
 #這是R Code Chunk
+payjoin<-inner_join(pay103,pay106,by="大職業別")
+payjoin$薪資比<-as.numeric(payjoin$`大學-薪資.y`)/as.numeric(payjoin$`大學-薪資.x`)
+payjoin<-arrange(payjoin,desc(薪資比))
+payjoin<-na.omit(payjoin)
+pp<-payjoin[payjoin$薪資比>1,]
+head(pp,10)
 ```
-
+將106年大學畢業薪資除以103年大學畢業薪資算出薪資比，由此可知大於1的值就是106年薪資大於103年薪資的值，比例越大差異越大。
 ### 提高超過5%的的職業有哪些? 
 ```{r over5}
 #這是R Code Chunk
+pp2<-payjoin[payjoin$薪資比>1.05,]
+pp2
 ```
 
 ### 主要的職業種別是哪些種類呢?
 ```{r mainType}
 #這是R Code Chunk
+career<-strsplit(pp2$大職業別,"-")
+career<-sapply(career,"[",1)
+table(career)
 ```
 
 ## 男女同工不同酬現況分析
@@ -38,29 +49,81 @@ library(dplyr)
 ### 103到106年度的大學畢業薪資資料，哪些行業男生薪資比女生薪資多?
 ```{r male}
 #這是R Code Chunk
+pay103$`大學-女/男`<-as.numeric(pay103$`大學-女/男`)
+pay103b<-pay103[pay103$`大學-女/男`<100,]%>%
+  na.omit(pay103b)%>%
+  arrange((`大學-女/男`))%>%
+  head(10)
+pay104$`大學-女/男`<-as.numeric(pay104$`大學-女/男`)
+pay104b<-pay104[pay104$`大學-女/男`<100,]%>%
+  na.omit(pay104b)%>%
+  arrange((`大學-女/男`))%>%
+  head(10)
+pay105$`大學-女/男`<-as.numeric(pay105$`大學-女/男`)
+pay105b<-pay105[pay105$`大學-女/男`<100,]%>%
+  na.omit(pay105b)%>%
+  arrange((`大學-女/男`))%>%
+  head(10)
+pay106$`大學-女/男`<-as.numeric(pay106$`大學-女/男`)
+pay106b<-pay106[pay106$`大學-女/男`<100,]%>%
+  na.omit(pay106b)%>%
+  arrange((`大學-女/男`))%>%
+  head(10)
+
+a<-data.frame(top103=head(pay103b$大職業別,10),
+              top104=head(pay104b$大職業別,10),
+              top105=head(pay105b$大職業別,10),
+              top106=head(pay106b$大職業別,10))
+a
 ```
 ### 哪些行業女生薪資比男生薪資多? 
 ```{r female}
 #這是R Code Chunk
-```
+pay103c<-pay103[pay103$`大學-女/男`>100,]%>%
+  arrange(desc(`大學-女/男`))%>%
+  head(10)
+pay104c<-pay104[pay104$`大學-女/男`>100,]%>%
+  arrange(desc(`大學-女/男`))%>%
+  head(10)
+pay105c<-pay105[pay105$`大學-女/男`>100,]%>%
+  arrange(desc(`大學-女/男`))%>%
+  head(10)
+pay106c<-pay106[pay106$`大學-女/男`>100,]%>%
+  arrange(desc(`大學-女/男`))%>%
+  head(10)
 
+b<-data.frame(top103=head(pay103c$大職業別,10),
+              top104=head(pay104c$大職業別,10),
+              top105=head(pay105c$大職業別,10),
+              top106=head(pay106c$大職業別,10))
+b
+```
+將103到106年的大學男女畢業薪資比取出來由大到小排序，大於100的值代表女生畢業薪資大於男性。
 ## 研究所薪資差異
 
 以106年度的資料來看，哪個職業別念研究所最划算呢 (研究所學歷薪資與大學學歷薪資增加比例最多)?
  
 ```{r grad}
 #這是R Code Chunk
+pay106d<-pay106[,c(2,11,13)]
+pay106d$薪資比<-as.numeric(pay106d$`研究所及以上-薪資`)/as.numeric(pay106d$`大學-薪資`)
+pay106d<-na.omit(pay106d)%>%
+  arrange(desc(薪資比))
+head(pay106d,10)
 ```
-
+將研究所畢業薪資除已大學畢業薪資的到的薪資比表示其增加的比例，比例越高起薪差距越大。
 ## 我有興趣的職業別薪資狀況分析
 
 ### 有興趣的職業別篩選，呈現薪資
 ```{r like}
 #這是R Code Chunk
+f<-pay106d[30,]
+f
 ```
 
 ### 這些職業別研究所薪資與大學薪資差多少呢？
 ```{r likeGrad}
 #這是R Code Chunk
+as.numeric(f$`研究所及以上-薪資`)-as.numeric(f$`大學-薪資`)
 ```
-
+結果得知研究所起薪比大學高4000多，跟我原先的認知差不多，所以不會影響我的決定，我還是不會讀研究所。
